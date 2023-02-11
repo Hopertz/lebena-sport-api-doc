@@ -1,2 +1,2 @@
-# Lebena Sports API OpenAPI Definition
+# Lebena Sports API Documentation
 
