@@ -1,84 +1,2766 @@
-openapi: 3.0.2
+openapi: 3.0.0
 info:
+  title: lebena
   version: 1.0.0
-  title: Example.com
-  termsOfService: 'https://example.com/terms/'
   contact:
-    email: contact@example.com
-    url: 'http://example.com/contact'
+    email: lugano@hopertz.me
   license:
     name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-  x-logo:
-    url: 'https://redocly.github.io/openapi-template/logo.png'
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
   description: >
-    This is an **example** API to demonstrate features of OpenAPI specification
+    This is Lebena Sports API Documentation thoughts on how football api for Tanzania premier league.
 
     # Introduction
 
     This API definition is intended to to be a good starting point for
-    describing your API in 
+    describing Lebena sports API in [Lebena API](https://github.com/Golang-Tanzania/lebena-api).
+    This documentation will guide you to using the api. Please don't abuse it.
 
-    [OpenAPI/Swagger
-    format](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md).
-
-    It also demonstrates features of
-    [create-openapi-repo](https://github.com/Redocly/create-openapi-repo) tool
-    and 
-
-    [Redoc](https://github.com/Redocly/Redoc) documentation engine. So beyond
-    the standard OpenAPI syntax we use a few 
-
-    [vendor
-    extensions](https://github.com/Redocly/Redoc/blob/master/docs/redoc-vendor-extensions.md).
-
-
-    # OpenAPI Specification
-
-    The goal of The OpenAPI Specification is to define a standard,
-    language-agnostic interface to REST APIs which
-
-    allows both humans and computers to discover and understand the capabilities
-    of the service without access to source
-
-    code, documentation, or through network traffic inspection. When properly
-    defined via OpenAPI, a consumer can 
-
-    understand and interact with the remote service with a minimal amount of
-    implementation logic. Similar to what
-
-    interfaces have done for lower-level programming, OpenAPI removes the
-    guesswork in calling the service.
-externalDocs:
-  description: Find out how to create a GitHub repo for your OpenAPI definition.
-  url: 'https://github.com/Rebilly/generator-openapi-repo'
-tags:
-  - name: Echo
-    description: Example echo operations
-  - name: User
-    description: Operations about user
 servers:
-  - url: 'http://example.com/api/v1'
-  - url: 'https://example.com/api/v1'
-paths:
-  '/users/{username}':
-    $ref: 'paths/users@{username}.yaml'
-  /echo:
-    $ref: paths/echo.yaml
+  - url: "https://sports.eadevs.com"
 components:
   securitySchemes:
-    main_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: 'http://example.com/api/oauth/dialog'
-          scopes:
-            'read:users': read users info
-            'write:users': modify or remove users
-    api_key:
-      type: apiKey
-      in: header
-      name: api_key
-    basic_auth:
+    bearerAuth:
       type: http
-      scheme: basic
+      scheme: bearer
+paths:
+  /v1/healthcheck:
+    get:
+      tags:
+        - healthcheck
+      summary: Perform Healthcheck
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  system_info:
+                    type: object
+                    properties:
+                      environment:
+                        type: string
+                      version:
+                        type: string
+                x-examples:
+                  Example 1:
+                    status: available
+                    system_info:
+                      environment: production
+                      version: 1.0.0
+      description: Check if system is available and a certain environment and version is running
+  /v1/users:
+    post:
+      tags:
+        - Account
+      summary: Sign up user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              x-examples:
+                Example 1:
+                  name: programmer
+                  email: lugano@hopertz.me
+                  password: pa55word
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              properties: {}
+      responses:
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      created_at:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      activated:
+                        type: boolean
+                x-examples:
+                  Example 1:
+                    user:
+                      id: 15
+                      created_at: "2023-02-10T07:05:37+03:00"
+                      name: programmer
+                      email: lugano@hopertz.me
+                      activated: false
+        "422":
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                x-examples:
+                  Example 1:
+                    error:
+                      email: a user with this email address already exists
+      description: Register inorder to use lebena sports api. An email will sent to activate account.
+  /v1/users/activated:
+    put:
+      tags:
+        - Account
+      summary: Activate user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              x-examples:
+                Example 1:
+                  token: HTQPRUVZJLPZWCQWQSYLJB32SU
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      created_at:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      activated:
+                        type: boolean
+                x-examples:
+                  Example 1:
+                    user:
+                      id: 15
+                      created_at: "2023-02-10T07:05:37+03:00"
+                      name: programmer
+                      email: lugano@hopertz.me
+                      activated: true
+        "422":
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                x-examples:
+                  Example 1:
+                    error:
+                      token: invalid or expired activation token
+      description: Use this to activate your account with the token sent in your email which you provided
+  /v1/tokens/authentication:
+    post:
+      tags:
+        - Account
+      summary: Get Token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              x-examples:
+                Example 1:
+                  email: lugano.ngulwa@gmail.com
+                  password: pa55word
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authentication_token:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      expiry:
+                        type: string
+                x-examples:
+                  Example 1:
+                    authentication_token:
+                      token: FAFOIHAH7WG3PESYCJQP7EMPC4
+                      expiry: "2023-02-11T14:22:44.176120043+03:00"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                x-examples:
+                  Example 1:
+                    error: invalid authentication credentials
+      description: Use this to get token that will be used in subsequently request for the endpoints that need authentication.
+  "/v1/teams/{team_id}":
+    get:
+      tags:
+        - Teams
+      summary: Get Team
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  team:
+                    type: object
+                    properties:
+                      id_team:
+                        type: string
+                      team_photo:
+                        type: string
+                      id_stadium:
+                        type: string
+                      club:
+                        type: string
+                x-examples:
+                  Example 1:
+                    team:
+                      id_team: 1bf91896-7dac-4e86-aba1-e636001f0cc4
+                      team_photo: "https://sports.azamtv.co.tz/content/images/teams/azam_fc_new_2021.jpg"
+                      id_stadium: 2ab4d700-c874-427e-b9f5-9bf8f942c3c9
+                      club: AZAM FC
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                x-examples:
+                  Example 1:
+                    error: the requested resource could not be found
+      x-internal: false
+      description: Get a specific team using ID (uuid)
+    parameters:
+      - schema:
+          type: string
+        name: team_id
+        in: path
+        required: true
+        description: teamID where id is in UUID
+  "/v1/matches/{match_id}":
+    get:
+      tags:
+        - Matches
+      summary: Get  match
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  match:
+                    type: object
+                    properties:
+                      id_match:
+                        type: string
+                      home_team:
+                        type: string
+                      away_team:
+                        type: string
+                      stadium_name:
+                        type: string
+                      date:
+                        type: string
+                x-examples:
+                  Example 1:
+                    match:
+                      id_match: ca5954f2-6763-4cac-a3bc-f6e06c768056
+                      home_team: DODOMA JIJI FC
+                      away_team: RUVU SHOOTING FC
+                      stadium_name: Liti Stadium
+                      date: "2022-12-03T00:00:00Z"
+              examples: {}
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security:
+        - bearerAuth: []
+      description: Get a specific match using ID (uuid)
+    parameters:
+      - schema:
+          type: string
+        name: match_id
+        in: path
+        required: true
+        description: matchID where by id is form of UUID
+  "/v1/stadiums/{stadium_id}":
+    get:
+      tags:
+        - Stadiums
+      summary: Get stadium
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stadium:
+                    type: object
+                    properties:
+                      id_stadium:
+                        type: string
+                      full_name:
+                        type: string
+                      location:
+                        type: string
+                      capacity:
+                        type: string
+                x-examples:
+                  Example 1:
+                    stadium:
+                      id_stadium: 9225a3b9-dca6-415f-92ba-c5fbf2ee6837
+                      full_name: Ushirika Stadium
+                      location: Moshi
+                      capacity: ""
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                x-examples:
+                  Example 1:
+                    error: the requested resource could not be found
+      description: Get a specific match using ID (uuid)
+    parameters:
+      - schema:
+          type: string
+        name: stadium_id
+        in: path
+        required: true
+        description: StadiumID where by Id is form of UUID
+  /v1/teams:
+    get:
+      tags:
+        - Teams
+      summary: Get Teams
+      parameters:
+        - in: query
+          schema:
+            type: string
+            example: club=simba or club=yanga
+          name: club
+          example: club=simba or club=yanga
+          description: Name of club
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: 1
+          description: "Page number "
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            example: 20
+          example: 20
+          description: Page size for each page
+        - schema:
+            type: string
+            example: sort=-club or sort=club
+          in: query
+          name: sort
+          description: Sort by club name ascending or descending
+          example: sort=-club or sort=club
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      first_page:
+                        type: integer
+                      last_page:
+                        type: integer
+                      total_records:
+                        type: integer
+                  teams:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_team:
+                          type: string
+                        team_photo:
+                          type: string
+                        id_stadium:
+                          type: string
+                        club:
+                          type: string
+                x-examples:
+                  Example 1:
+                    metadata:
+                      current_page: 1
+                      page_size: 20
+                      first_page: 1
+                      last_page: 1
+                      total_records: 16
+                    teams:
+                      - id_team: 1bf91896-7dac-4e86-aba1-e636001f0cc4
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/azam_fc_new_2021.jpg"
+                        id_stadium: 2ab4d700-c874-427e-b9f5-9bf8f942c3c9
+                        club: AZAM FC
+                      - id_team: 097eb2fc-5b45-464a-9585-11794176e654
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/coastal-union.png"
+                        id_stadium: ""
+                        club: COASTAL UNION FC
+                      - id_team: ed7212a8-4fb9-493f-bdab-290b254558d6
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/dodoma_fc.png"
+                        id_stadium: ""
+                        club: DODOMA JIJI FC
+                      - id_team: 3f76091b-942c-4325-a42b-0e134250d5aa
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/geita_gold_fc.png"
+                        id_stadium: ""
+                        club: GEITA GOLD FC
+                      - id_team: 6675680d-37c7-4f50-aa8d-77c5b8907dd6
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/ihefu_sc.png"
+                        id_stadium: ""
+                        club: IHEFU SC
+                      - id_team: 82271ad2-ed5f-49c8-a232-cc1e66a1ff64
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/kagera_sugar_fc.png"
+                        id_stadium: ""
+                        club: KAGERA SUGAR FC
+                      - id_team: ecdecfc9-5481-4512-a920-9df3e6be79ea
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/kmc-fc.jpg"
+                        id_stadium: ""
+                        club: KMC FC
+                      - id_team: e796fa13-2ca6-44ab-9c25-bd9e1f8a3d7b
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/mbeya_city.png"
+                        id_stadium: ""
+                        club: MBEYA CITY FC
+                      - id_team: 5b39ebfb-01ed-430a-b7a9-2c4d6942e824
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/mtibwa_sugar.png"
+                        id_stadium: 9739e92d-8170-4701-9175-de1a56e969b5
+                        club: MTIBWA SUGAR FC
+                      - id_team: 3ea6dd2c-a150-4c82-8a53-8f9140581c5d
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/namungo_fc.png"
+                        id_stadium: ""
+                        club: NAMUNGO FC
+                      - id_team: 693fa7b9-dc02-45d0-a889-1e81e79be757
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/polisi-tanzania.png"
+                        id_stadium: ""
+                        club: POLISI TANZANIA FC
+                      - id_team: 3c1c1b7f-eefb-451c-9b6f-de46044f029f
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/ruvushooting-new_2021.jpg"
+                        id_stadium: ""
+                        club: RUVU SHOOTING FC
+                      - id_team: 2c3f8600-06ec-4263-8ab0-cf5887708b45
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/simba-sc-new.png"
+                        id_stadium: ""
+                        club: SIMBA SC
+                      - id_team: b01a4342-23bc-4956-b049-6413e7accb9b
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/singida_big_stars_fc.jpg"
+                        id_stadium: ""
+                        club: SINGIDA BIG STARS FC
+                      - id_team: fefe8a69-5794-4a6b-9aaf-13611bc49be3
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/tanzania_prisons.png"
+                        id_stadium: ""
+                        club: TANZANIA PRISONS SC
+                      - id_team: eae74e34-7b0f-43eb-8751-2b56e1cc12be
+                        team_photo: "https://sports.azamtv.co.tz/content/images/teams/yanga_sc.png"
+                        id_stadium: ""
+                        club: YOUNG AFRICANS SC
+      description: Get all teams or query for specific teams
+      security:
+        - bearerAuth: []
+  "/v1/players/{player_id}":
+    get:
+      tags:
+        - Players
+      summary: Get player
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  player:
+                    type: object
+                    properties:
+                      id_player:
+                        type: string
+                      id_team:
+                        type: string
+                      team:
+                        type: string
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+                      kit:
+                        type: integer
+                      position:
+                        type: string
+                      region:
+                        type: string
+                      player_photo:
+                        type: string
+                      previous_club:
+                        type: string
+                x-examples:
+                  Example 1:
+                    player:
+                      id_player: 90495f0d-e67b-4c8d-9c26-41e62799ecfd
+                      id_team: 3ea6dd2c-a150-4c82-8a53-8f9140581c5d
+                      team: NAMUNGO FC
+                      first_name: Lucas
+                      last_name: Kikoti
+                      kit: 8
+                      position: Mid fielder
+                      region: Ruvuma
+                      player_photo: ""
+                      previous_club: Majimaji
+      description: Get a specific player using ID (uuid)
+      security:
+        - bearerAuth: []
+    parameters:
+      - schema:
+          type: string
+        name: player_id
+        in: path
+        required: true
+        description: playerID whereby ID is in the form of UUID
+  /v1/stadiums:
+    get:
+      tags:
+        - Stadiums
+      summary: Get stadiums
+      parameters:
+        - name: sort
+          in: query
+          schema:
+            type: string
+            example: fullname or -fullname
+          example: "-full_name or full_name"
+          description: sort the results
+        - name: location
+          in: query
+          schema:
+            type: string
+            example: dodoma or geita
+          example: geita
+          description: location of the stadium
+        - schema:
+            type: string
+            example: jamhuri
+          in: query
+          name: name
+          description: name of the stadium
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      first_page:
+                        type: integer
+                      last_page:
+                        type: integer
+                      total_records:
+                        type: integer
+                  teams:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_stadium:
+                          type: string
+                        full_name:
+                          type: string
+                        location:
+                          type: string
+                        capacity:
+                          type: string
+                x-examples:
+                  Example 1:
+                    metadata:
+                      current_page: 1
+                      page_size: 20
+                      first_page: 1
+                      last_page: 1
+                      total_records: 18
+                    teams:
+                      - id_stadium: 2ab4d700-c874-427e-b9f5-9bf8f942c3c9
+                        full_name: Azam Complex Stadium
+                        location: Dar es salaam
+                        capacity: "10000"
+                      - id_stadium: 7eb63122-903d-46d3-8bff-419f54ae7563
+                        full_name: Black Rhino Stadium
+                        location: Arusha
+                        capacity: ""
+                      - id_stadium: b8a1796d-70c9-4950-8eaf-64afbfdc840c
+                        full_name: Ccm Kirumba Stadium
+                        location: Mwanza
+                        capacity: "35000"
+                      - id_stadium: 4b9607d9-717f-47ec-a0c9-67bf88865022
+                        full_name: Highland Estates Stadium
+                        location: Mbeya
+                        capacity: ""
+                      - id_stadium: 978a2748-c6c7-4b34-b9bb-65acecfa0ded
+                        full_name: Jamhuri Stadium
+                        location: Dodoma
+                        capacity: "10000"
+                      - id_stadium: e9d8f690-f071-418c-99dc-2dbf2f223a84
+                        full_name: Kaitaba Stadium
+                        location: Bukoba
+                        capacity: "5000"
+                      - id_stadium: f2c469ee-8804-4594-9ae4-70e214898bcc
+                        full_name: Liti Stadium
+                        location: Morogoro
+                        capacity: ""
+                      - id_stadium: a2716aa4-2f49-454c-bc89-54a77ec09ae9
+                        full_name: Mabatini Stadium
+                        location: Pwani
+                        capacity: "3000"
+                      - id_stadium: 6aaa7d49-8752-48eb-8998-2c5ecb797e5b
+                        full_name: Magogo Stadium
+                        location: Geita
+                        capacity: ""
+                      - id_stadium: cd8f7c21-e5b0-4a37-a495-6697f990e7d0
+                        full_name: Majaliwa Stadium
+                        location: Lindi
+                        capacity: ""
+                      - id_stadium: 9739e92d-8170-4701-9175-de1a56e969b5
+                        full_name: Manungu Stadium
+                        location: Morogoro
+                        capacity: "5000"
+                      - id_stadium: 48a81541-2d1c-4f9d-b8e7-6b841a09fcb1
+                        full_name: Mkwakwani Stadium
+                        location: Tanga
+                        capacity: "15000"
+                      - id_stadium: 429226d9-6551-4f4a-be47-be2f6018d969
+                        full_name: National Stadium
+                        location: Dar es salaam
+                        capacity: "60000"
+                      - id_stadium: fa72c6cd-95af-4c23-b39b-45ed0d73323c
+                        full_name: Nyankumbu Stadium
+                        location: Geita
+                        capacity: ""
+                      - id_stadium: 7f3cccee-bd6b-4a49-89af-42b2ef92b2fe
+                        full_name: Sheikh Amri Abeid Stadium
+                        location: Arusha
+                        capacity: "20000"
+                      - id_stadium: 8e6e76c0-43d4-4084-8b79-ebde52468609
+                        full_name: Sokoine Stadium
+                        location: Mbeya
+                        capacity: "10000"
+                      - id_stadium: 27113bae-35c9-4d3e-89c8-76bc862b6e83
+                        full_name: Uhuru Stadium
+                        location: Dar es salaam
+                        capacity: "23000"
+                      - id_stadium: 9225a3b9-dca6-415f-92ba-c5fbf2ee6837
+                        full_name: Ushirika Stadium
+                        location: Moshi
+                        capacity: ""
+      security:
+        - bearerAuth: []
+      description: Get all stadiums or query for specific stadiums
+  /v1/players:
+    get:
+      tags:
+        - Players
+      summary: Get  players
+      parameters:
+        - name: region
+          in: query
+          schema:
+            type: string
+            example: mbeya or geita
+          example: dodoma
+          description: region the players is from
+        - name: position
+          in: query
+          schema:
+            type: string
+            example: position=Goalkeeper or Defender or Mid fielder or Striker
+          example: goalkeeper or defender or mid fielder or striker
+          description: Player playing position
+        - schema:
+            type: string
+            example: fiston
+          in: query
+          name: firstname
+          description: Firstname of the player
+          example: fiston
+        - schema:
+            type: string
+            example: chama
+          in: query
+          name: lastname
+          description: Lastname of the player
+          example: chama
+        - schema:
+            type: string
+            example: namungo
+          in: query
+          name: club
+          description: name of club
+          example: namungo
+        - schema:
+            type: integer
+            example: 1
+          in: query
+          name: page
+          description: current page
+          example: 1
+        - schema:
+            type: integer
+            example: 20
+          in: query
+          name: page_size
+          example: 20
+          description: number of results in a page
+        - schema:
+            type: string
+            example: first_name or -first_name or club or -club or region or -region
+          in: query
+          name: sort
+          description: sort the results
+          example: first_name or -first_name or club or -club or region or -region
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      first_page:
+                        type: integer
+                      last_page:
+                        type: integer
+                      total_records:
+                        type: integer
+                  players:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_player:
+                          type: string
+                        id_team:
+                          type: string
+                        team:
+                          type: string
+                        first_name:
+                          type: string
+                        last_name:
+                          type: string
+                        kit:
+                          type: integer
+                        position:
+                          type: string
+                        region:
+                          type: string
+                        player_photo:
+                          type: string
+                        previous_club:
+                          type: string
+                x-examples:
+                  Example 1:
+                    metadata:
+                      current_page: 1
+                      page_size: 20
+                      first_page: 1
+                      last_page: 29
+                      total_records: 568
+                    players:
+                      - id_player: 65091cf6-dadd-48b2-90c2-220cfa33f23e
+                        id_team: eae74e34-7b0f-43eb-8751-2b56e1cc12be
+                        team: YOUNG AFRICANS SC
+                        first_name: Abdallah
+                        last_name: Shaibu
+                        kit: 23
+                        position: Defender
+                        region: Zanzibar
+                        player_photo: ""
+                        previous_club: Lagalaksi
+                      - id_player: 3b319442-b6c8-427f-a066-b21d6d8231d1
+                        id_team: 82271ad2-ed5f-49c8-a232-cc1e66a1ff64
+                        team: KAGERA SUGAR FC
+                        first_name: Abdallah
+                        last_name: Seseme
+                        kit: 27
+                        position: Mid fielder
+                        region: Kagera
+                        player_photo: ""
+                        previous_club: Mwadui
+                      - id_player: 65578768-d118-48fd-ac11-c7ee7a6a29e2
+                        id_team: 82271ad2-ed5f-49c8-a232-cc1e66a1ff64
+                        team: KAGERA SUGAR FC
+                        first_name: Abdallah
+                        last_name: Mfuko
+                        kit: 9
+                        position: Defender
+                        region: Kagera
+                        player_photo: ""
+                        previous_club: Kmc
+                      - id_player: e12d06f5-134d-4600-8aca-fc8f0e4862ab
+                        id_team: 3c1c1b7f-eefb-451c-9b6f-de46044f029f
+                        team: RUVU SHOOTING FC
+                        first_name: Abdallah
+                        last_name: Abdallah
+                        kit: 36
+                        position: Goalkeeper
+                        region: Dar es salaam
+                        player_photo: ""
+                        previous_club: ""
+                      - id_player: fd825204-a1b3-4737-9c71-4cf2cf239b54
+                        id_team: 1bf91896-7dac-4e86-aba1-e636001f0cc4
+                        team: AZAM FC
+                        first_name: Abdallah
+                        last_name: Kheri
+                        kit: 25
+                        position: Defender
+                        region: Dar es salaam
+                        player_photo: ""
+                        previous_club: Azam U-2
+                      - id_player: 6b822efd-a1f0-4b94-a0e6-fba00f99f5ac
+                        id_team: ed7212a8-4fb9-493f-bdab-290b254558d6
+                        team: DODOMA JIJI FC
+                        first_name: Abdallah
+                        last_name: Shaibu
+                        kit: 5
+                        position: Defender
+                        region: Dar es salaam
+                        player_photo: ""
+                        previous_club: ""
+                      - id_player: 9f7456ea-efff-4016-b0b4-cd6c4a707872
+                        id_team: 1bf91896-7dac-4e86-aba1-e636001f0cc4
+                        team: AZAM FC
+                        first_name: Abdul
+                        last_name: Hamisi
+                        kit: 9
+                        position: Striker
+                        region: Dar es salaam
+                        player_photo: ""
+                        previous_club: Coastal Union Fc
+                      - id_player: b57abc56-5adc-407d-8609-ca229c307054
+                        id_team: 3ea6dd2c-a150-4c82-8a53-8f9140581c5d
+                        team: NAMUNGO FC
+                        first_name: Abdul
+                        last_name: Omary
+                        kit: 44
+                        position: Defender
+                        region: Zanzibar
+                        player_photo: ""
+                        previous_club: Azam Fc
+                      - id_player: cc7b74ad-7c21-4fb1-b8e8-6d8d9c88ebe6
+                        id_team: ecdecfc9-5481-4512-a920-9df3e6be79ea
+                        team: KMC FC
+                        first_name: Abdul
+                        last_name: Hassan
+                        kit: 25
+                        position: Striker
+                        region: Dar es salaam
+                        player_photo: ""
+                        previous_club: ""
+                      - id_player: 20dd7f77-23c1-4386-a52f-82200a7af2f7
+                        id_team: 693fa7b9-dc02-45d0-a889-1e81e79be757
+                        team: POLISI TANZANIA FC
+                        first_name: Abdul
+                        last_name: Karim
+                        kit: 33
+                        position: Mid fielder
+                        region: ""
+                        player_photo: ""
+                        previous_club: ""
+                      - id_player: 0085ff90-242b-4b92-b111-539bdbdec1a7
+                        id_team: 82271ad2-ed5f-49c8-a232-cc1e66a1ff64
+                        team: KAGERA SUGAR FC
+                        first_name: Abdul-azizi
+                        last_name: Makame
+                        kit: 42
+                        position: Defender
+                        region: Kagera
+                        player_photo: ""
+                        previous_club: Namungo Fc
+                      - id_player: 0bae264b-ac16-41d3-9d9a-7434d0c2841d
+                        id_team: b01a4342-23bc-4956-b049-6413e7accb9b
+                        team: SINGIDA BIG STARS FC
+                        first_name: Abdulmajid
+                        last_name: Mangalo
+                        kit: 2
+                        position: Mid fielder
+                        region: Dar es salaam
+                        player_photo: ""
+                        previous_club: ""
+                      - id_player: abed8f32-deca-40c7-99ae-a44d46461739
+                        id_team: 3ea6dd2c-a150-4c82-8a53-8f9140581c5d
+                        team: NAMUNGO FC
+                        first_name: Abdulmalik
+                        last_name: Zakaria
+                        kit: 26
+                        position: Defender
+                        region: Zanzibar
+                        player_photo: ""
+                        previous_club: "Polisi Tz "
+                      - id_player: ebd2f845-16f2-48c9-a226-6c8c32594658
+                        id_team: 3ea6dd2c-a150-4c82-8a53-8f9140581c5d
+                        team: NAMUNGO FC
+                        first_name: Abdulrazack
+                        last_name: Hamza
+                        kit: 60
+                        position: Defender
+                        region: Morogoro
+                        player_photo: ""
+                        previous_club: Azam Fc
+                      - id_player: cac75623-71d1-4f9d-9369-05d362e7581e
+                        id_team: e796fa13-2ca6-44ab-9c25-bd9e1f8a3d7b
+                        team: MBEYA CITY FC
+                        first_name: Abdulrazack
+                        last_name: Hamza
+                        kit: 30
+                        position: Defender
+                        region: Morogoro
+                        player_photo: ""
+                        previous_club: Azam Fc
+                      - id_player: 284ab47f-51b8-4d70-b746-47511ba19519
+                        id_team: 82271ad2-ed5f-49c8-a232-cc1e66a1ff64
+                        team: KAGERA SUGAR FC
+                        first_name: Abeid
+                        last_name: Katonda
+                        kit: 7
+                        position: Striker
+                        region: Kagera
+                        player_photo: ""
+                        previous_club: Namungo
+                      - id_player: 6a8ae67b-8ddf-4a72-a1af-997b497d5900
+                        id_team: 3c1c1b7f-eefb-451c-9b6f-de46044f029f
+                        team: RUVU SHOOTING FC
+                        first_name: Abrahaman
+                        last_name: Abrahamani
+                        kit: 3
+                        position: Mid fielder
+                        region: Dar es salaam
+                        player_photo: ""
+                        previous_club: ""
+                      - id_player: 0f214a00-f41d-48fc-8996-1da644b17e03
+                        id_team: 5b39ebfb-01ed-430a-b7a9-2c4d6942e824
+                        team: MTIBWA SUGAR FC
+                        first_name: Abubakar
+                        last_name: Juma
+                        kit: 8
+                        position: Mid fielder
+                        region: Dar es salaam
+                        player_photo: ""
+                        previous_club: ""
+                      - id_player: be2484be-ba9f-4be2-97f5-387ab2ba1aa8
+                        id_team: 3c1c1b7f-eefb-451c-9b6f-de46044f029f
+                        team: RUVU SHOOTING FC
+                        first_name: Abubakar
+                        last_name: Sufian
+                        kit: 37
+                        position: Striker
+                        region: Dar es salaam
+                        player_photo: ""
+                        previous_club: ""
+                      - id_player: 9029bbf2-2805-4cf4-8c8f-153e075976af
+                        id_team: 82271ad2-ed5f-49c8-a232-cc1e66a1ff64
+                        team: KAGERA SUGAR FC
+                        first_name: Abubakar
+                        last_name: Sabian
+                        kit: 15
+                        position: Defender
+                        region: Kagera
+                        player_photo: ""
+                        previous_club: Kmc
+      security:
+        - bearerAuth: []
+      description: Get all players or query for specific players
+  /v1/matches:
+    get:
+      tags:
+        - Matches
+      summary: Get matches
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matches:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_match:
+                          type: string
+                        home_team:
+                          type: string
+                        away_team:
+                          type: string
+                        stadium_name:
+                          type: string
+                        date:
+                          type: string
+                  metadata:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      first_page:
+                        type: integer
+                      last_page:
+                        type: integer
+                      total_records:
+                        type: integer
+                x-examples:
+                  Example 1:
+                    matches:
+                      - id_match: 0c2272fc-2aa3-4ecb-a682-5302591cd167
+                        home_team: NAMUNGO FC
+                        away_team: MTIBWA SUGAR FC
+                        stadium_name: Uhuru Stadium
+                        date: "2022-08-15T00:00:00Z"
+                      - id_match: a8f148ee-cc7b-42ed-a989-93250c1855bc
+                        home_team: IHEFU SC
+                        away_team: RUVU SHOOTING FC
+                        stadium_name: Highland Estates Stadium
+                        date: "2022-08-15T00:00:00Z"
+                      - id_match: 6169082c-3533-4e40-840b-f5c299501c8d
+                        home_team: SINGIDA BIG STARS FC
+                        away_team: TANZANIA PRISONS SC
+                        stadium_name: Liti Stadium
+                        date: "2022-08-16T00:00:00Z"
+                      - id_match: 0536e9ea-1912-462b-84f2-cc65ed7b28ed
+                        home_team: POLISI TANZANIA FC
+                        away_team: YOUNG AFRICANS SC
+                        stadium_name: Sheikh Amri Abeid Stadium
+                        date: "2022-08-16T00:00:00Z"
+                      - id_match: 512350c3-50fb-4503-beab-83eca3316037
+                        home_team: AZAM FC
+                        away_team: KAGERA SUGAR FC
+                        stadium_name: Azam Complex Stadium
+                        date: "2022-08-17T00:00:00Z"
+                      - id_match: 6b5aae71-3c50-49ea-8b7e-316b8431fdfb
+                        home_team: DODOMA JIJI FC
+                        away_team: MBEYA CITY FC
+                        stadium_name: Liti Stadium
+                        date: "2022-08-17T00:00:00Z"
+                      - id_match: d59cb228-db33-453b-aace-a03c83c40508
+                        home_team: COASTAL UNION FC
+                        away_team: KMC FC
+                        stadium_name: Sheikh Amri Abeid Stadium
+                        date: "2022-08-17T00:00:00Z"
+                      - id_match: b6f8a3fc-bd73-432c-b91d-cb0cf98493e4
+                        home_team: SIMBA SC
+                        away_team: GEITA GOLD FC
+                        stadium_name: National Stadium
+                        date: "2022-08-17T00:00:00Z"
+                      - id_match: e76da1d3-4615-4b77-99e4-e8006eff2430
+                        home_team: IHEFU SC
+                        away_team: NAMUNGO FC
+                        stadium_name: Uhuru Stadium
+                        date: "2022-08-19T00:00:00Z"
+                      - id_match: 0418f4b2-dd65-476e-8dfc-8c5189b2811c
+                        home_team: DODOMA JIJI FC
+                        away_team: TANZANIA PRISONS SC
+                        stadium_name: Liti Stadium
+                        date: "2022-08-20T00:00:00Z"
+                      - id_match: e773cb3c-9dc4-47ea-8271-65b37726142a
+                        home_team: SIMBA SC
+                        away_team: KAGERA SUGAR FC
+                        stadium_name: National Stadium
+                        date: "2022-08-20T00:00:00Z"
+                      - id_match: 434e51b5-bac8-46b7-8e85-481425b249da
+                        home_team: COASTAL UNION FC
+                        away_team: YOUNG AFRICANS SC
+                        stadium_name: Sheikh Amri Abeid Stadium
+                        date: "2022-08-20T00:00:00Z"
+                      - id_match: cfd43096-03d6-4594-b19d-e5e2804a0a5e
+                        home_team: POLISI TANZANIA FC
+                        away_team: KMC FC
+                        stadium_name: Sheikh Amri Abeid Stadium
+                        date: "2022-08-21T00:00:00Z"
+                      - id_match: c56243f7-05d9-432f-8982-ea48f9bb0e95
+                        home_team: SINGIDA BIG STARS FC
+                        away_team: MBEYA CITY FC
+                        stadium_name: Liti Stadium
+                        date: "2022-08-21T00:00:00Z"
+                      - id_match: 09acbcd4-dc66-4d3a-8d46-a52f02836bf5
+                        home_team: MTIBWA SUGAR FC
+                        away_team: RUVU SHOOTING FC
+                        stadium_name: Manungu Stadium
+                        date: "2022-08-21T00:00:00Z"
+                      - id_match: 2a14d8be-599d-40b1-aa0f-c0316b5e0ca6
+                        home_team: AZAM FC
+                        away_team: GEITA GOLD FC
+                        stadium_name: Azam Complex Stadium
+                        date: "2022-08-21T00:00:00Z"
+                      - id_match: 0cf67ec7-4bd5-4d06-ae7e-c1bd45efbc34
+                        home_team: GEITA GOLD FC
+                        away_team: KAGERA SUGAR FC
+                        stadium_name: Ccm Kirumba Stadium
+                        date: "2022-09-06T00:00:00Z"
+                      - id_match: 35524959-7bd3-4292-bceb-cc4dadf65242
+                        home_team: YOUNG AFRICANS SC
+                        away_team: AZAM FC
+                        stadium_name: National Stadium
+                        date: "2022-09-06T00:00:00Z"
+                      - id_match: 0d4c57ed-f6e2-4834-a90a-73ae613374f6
+                        home_team: SIMBA SC
+                        away_team: KMC FC
+                        stadium_name: National Stadium
+                        date: "2022-09-07T00:00:00Z"
+                      - id_match: 64429546-fb58-4927-9c63-ac5213928809
+                        home_team: MTIBWA SUGAR FC
+                        away_team: IHEFU SC
+                        stadium_name: Manungu Stadium
+                        date: "2022-09-07T00:00:00Z"
+                    metadata:
+                      current_page: 1
+                      page_size: 20
+                      first_page: 1
+                      last_page: 12
+                      total_records: 232
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+            example: azam
+          in: query
+          name: team
+          description: the name of the team
+          example: azam
+        - schema:
+            type: string
+            example: jamhuri
+          in: query
+          name: stadium_name
+          description: the name of the satdium
+          example: jamhuri
+        - schema:
+            type: integer
+            example: 1
+          in: query
+          name: page
+          description: page number
+          example: 1
+        - schema:
+            type: integer
+            example: 20
+          in: query
+          name: page_size
+          description: number of items on that page
+          example: 20
+      description: Get all matches or query for specific matches
+  "/v1/results/{match_id}":
+    get:
+      tags:
+        - Results
+      summary: Get result
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json: {}
+        "":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      id_match:
+                        type: string
+                      home_team:
+                        type: string
+                      away_team:
+                        type: string
+                      stadium_name:
+                        type: string
+                      date:
+                        type: string
+                      score:
+                        type: object
+                        properties:
+                          ft:
+                            type: array
+                            items:
+                              type: integer
+                x-examples:
+                  Example 1:
+                    result:
+                      id_match: 0c2272fc-2aa3-4ecb-a682-5302591cd167
+                      home_team: NAMUNGO FC
+                      away_team: MTIBWA SUGAR FC
+                      stadium_name: Uhuru Stadium
+                      date: "2022-08-15T00:00:00Z"
+                      score:
+                        ft:
+                          - 2
+                          - 2
+      description: Get a specific result using ID (uuid)
+      security:
+        - bearerAuth: []
+    parameters:
+      - schema:
+          type: string
+        name: match_id
+        in: path
+        required: true
+        description: matchID where id is UUID
+  /v1/results:
+    get:
+      tags:
+        - Results
+      summary: Get results
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_match:
+                          type: string
+                        home_team:
+                          type: string
+                        away_team:
+                          type: string
+                        stadium_name:
+                          type: string
+                        date:
+                          type: string
+                        score:
+                          type: object
+                          properties:
+                            ft:
+                              type: array
+                              items:
+                                type: integer
+                  metadata:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      first_page:
+                        type: integer
+                      last_page:
+                        type: integer
+                      total_records:
+                        type: integer
+                x-examples:
+                  Example 1:
+                    Results:
+                      - id_match: 0c2272fc-2aa3-4ecb-a682-5302591cd167
+                        home_team: NAMUNGO FC
+                        away_team: MTIBWA SUGAR FC
+                        stadium_name: Uhuru Stadium
+                        date: "2022-08-15T00:00:00Z"
+                        score:
+                          ft:
+                            - 2
+                            - 2
+                      - id_match: a8f148ee-cc7b-42ed-a989-93250c1855bc
+                        home_team: IHEFU SC
+                        away_team: RUVU SHOOTING FC
+                        stadium_name: Highland Estates Stadium
+                        date: "2022-08-15T00:00:00Z"
+                        score:
+                          ft:
+                            - 0
+                            - 1
+                      - id_match: 6169082c-3533-4e40-840b-f5c299501c8d
+                        home_team: SINGIDA BIG STARS FC
+                        away_team: TANZANIA PRISONS SC
+                        stadium_name: Liti Stadium
+                        date: "2022-08-16T00:00:00Z"
+                        score:
+                          ft:
+                            - 1
+                            - 0
+                      - id_match: 0536e9ea-1912-462b-84f2-cc65ed7b28ed
+                        home_team: POLISI TANZANIA FC
+                        away_team: YOUNG AFRICANS SC
+                        stadium_name: Sheikh Amri Abeid Stadium
+                        date: "2022-08-16T00:00:00Z"
+                        score:
+                          ft:
+                            - 1
+                            - 2
+                      - id_match: b6f8a3fc-bd73-432c-b91d-cb0cf98493e4
+                        home_team: SIMBA SC
+                        away_team: GEITA GOLD FC
+                        stadium_name: National Stadium
+                        date: "2022-08-17T00:00:00Z"
+                        score:
+                          ft:
+                            - 3
+                            - 0
+                      - id_match: 512350c3-50fb-4503-beab-83eca3316037
+                        home_team: AZAM FC
+                        away_team: KAGERA SUGAR FC
+                        stadium_name: Azam Complex Stadium
+                        date: "2022-08-17T00:00:00Z"
+                        score:
+                          ft:
+                            - 2
+                            - 1
+                      - id_match: 6b5aae71-3c50-49ea-8b7e-316b8431fdfb
+                        home_team: DODOMA JIJI FC
+                        away_team: MBEYA CITY FC
+                        stadium_name: Liti Stadium
+                        date: "2022-08-17T00:00:00Z"
+                        score:
+                          ft:
+                            - 1
+                            - 3
+                      - id_match: d59cb228-db33-453b-aace-a03c83c40508
+                        home_team: COASTAL UNION FC
+                        away_team: KMC FC
+                        stadium_name: Sheikh Amri Abeid Stadium
+                        date: "2022-08-17T00:00:00Z"
+                        score:
+                          ft:
+                            - 1
+                            - 0
+                      - id_match: e76da1d3-4615-4b77-99e4-e8006eff2430
+                        home_team: IHEFU SC
+                        away_team: NAMUNGO FC
+                        stadium_name: Uhuru Stadium
+                        date: "2022-08-19T00:00:00Z"
+                        score:
+                          ft:
+                            - 0
+                            - 1
+                      - id_match: 0418f4b2-dd65-476e-8dfc-8c5189b2811c
+                        home_team: DODOMA JIJI FC
+                        away_team: TANZANIA PRISONS SC
+                        stadium_name: Liti Stadium
+                        date: "2022-08-20T00:00:00Z"
+                        score:
+                          ft:
+                            - 1
+                            - 2
+                      - id_match: 434e51b5-bac8-46b7-8e85-481425b249da
+                        home_team: COASTAL UNION FC
+                        away_team: YOUNG AFRICANS SC
+                        stadium_name: Sheikh Amri Abeid Stadium
+                        date: "2022-08-20T00:00:00Z"
+                        score:
+                          ft:
+                            - 0
+                            - 2
+                      - id_match: e773cb3c-9dc4-47ea-8271-65b37726142a
+                        home_team: SIMBA SC
+                        away_team: KAGERA SUGAR FC
+                        stadium_name: National Stadium
+                        date: "2022-08-20T00:00:00Z"
+                        score:
+                          ft:
+                            - 2
+                            - 0
+                      - id_match: cfd43096-03d6-4594-b19d-e5e2804a0a5e
+                        home_team: POLISI TANZANIA FC
+                        away_team: KMC FC
+                        stadium_name: Sheikh Amri Abeid Stadium
+                        date: "2022-08-21T00:00:00Z"
+                        score:
+                          ft:
+                            - 2
+                            - 2
+                      - id_match: c56243f7-05d9-432f-8982-ea48f9bb0e95
+                        home_team: SINGIDA BIG STARS FC
+                        away_team: MBEYA CITY FC
+                        stadium_name: Liti Stadium
+                        date: "2022-08-21T00:00:00Z"
+                        score:
+                          ft:
+                            - 2
+                            - 1
+                      - id_match: 2a14d8be-599d-40b1-aa0f-c0316b5e0ca6
+                        home_team: AZAM FC
+                        away_team: GEITA GOLD FC
+                        stadium_name: Azam Complex Stadium
+                        date: "2022-08-21T00:00:00Z"
+                        score:
+                          ft:
+                            - 1
+                            - 1
+                      - id_match: 09acbcd4-dc66-4d3a-8d46-a52f02836bf5
+                        home_team: MTIBWA SUGAR FC
+                        away_team: RUVU SHOOTING FC
+                        stadium_name: Manungu Stadium
+                        date: "2022-08-21T00:00:00Z"
+                        score:
+                          ft:
+                            - 2
+                            - 1
+                      - id_match: 0cf67ec7-4bd5-4d06-ae7e-c1bd45efbc34
+                        home_team: GEITA GOLD FC
+                        away_team: KAGERA SUGAR FC
+                        stadium_name: Ccm Kirumba Stadium
+                        date: "2022-09-06T00:00:00Z"
+                        score:
+                          ft:
+                            - 1
+                            - 1
+                      - id_match: 64429546-fb58-4927-9c63-ac5213928809
+                        home_team: MTIBWA SUGAR FC
+                        away_team: IHEFU SC
+                        stadium_name: Manungu Stadium
+                        date: "2022-09-07T00:00:00Z"
+                        score:
+                          ft:
+                            - 3
+                            - 1
+                      - id_match: 0d4c57ed-f6e2-4834-a90a-73ae613374f6
+                        home_team: SIMBA SC
+                        away_team: KMC FC
+                        stadium_name: National Stadium
+                        date: "2022-09-07T00:00:00Z"
+                        score:
+                          ft:
+                            - 2
+                            - 2
+                      - id_match: 47987072-60f7-4cac-adba-fb3e2c00f240
+                        home_team: TANZANIA PRISONS SC
+                        away_team: MBEYA CITY FC
+                        stadium_name: Sokoine Stadium
+                        date: "2022-09-09T00:00:00Z"
+                        score:
+                          ft:
+                            - 1
+                            - 1
+                    metadata:
+                      current_page: 1
+                      page_size: 20
+                      first_page: 1
+                      last_page: 9
+                      total_records: 161
+      description: Get all result of matches or query for specific result of  matches
+      parameters:
+        - schema:
+            type: string
+            example: azam
+          in: query
+          name: "team "
+          description: name of the team
+          example: azam
+        - schema:
+            type: string
+            example: liti
+          in: query
+          name: stadium_name
+          description: name of the stadium
+          example: liti
+        - schema:
+            type: integer
+            example: 1
+          in: query
+          name: page
+          description: page number
+          example: 1
+        - schema:
+            type: integer
+            example: 20
+          in: query
+          name: page_size
+          description: number of items in that page
+          example: 20
+  /v1/topscorers:
+    get:
+      tags:
+        - Stats
+      summary: Get topscorers
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Topscores:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_player:
+                          type: string
+                        first_name:
+                          type: string
+                        last_name:
+                          type: string
+                        goals:
+                          type: integer
+                  metadata:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      first_page:
+                        type: integer
+                      last_page:
+                        type: integer
+                      total_records:
+                        type: integer
+                x-examples:
+                  Example 1:
+                    Topscores:
+                      - id_player: 865ad866-8ca7-4acb-b2da-6dcfb191f5d9
+                        first_name: Stephane
+                        last_name: Aziz
+                        goals: 4
+                      - id_player: 22703e2d-1912-432f-a040-7652bdbbec64
+                        first_name: Ibrahim
+                        last_name: Ali
+                        goals: 4
+                      - id_player: fbee1cff-fd75-491e-961d-d3efd39d2ac0
+                        first_name: Adulkassim
+                        last_name: Suleiman
+                        goals: 4
+                      - id_player: 63db842c-d956-45e5-b8a3-0ec156b6122d
+                        first_name: Matheo
+                        last_name: Athony
+                        goals: 4
+                      - id_player: 1e70b0f3-aa23-4baa-9f0b-dc3a66e5b843
+                        first_name: Samson
+                        last_name: Mbangula
+                        goals: 4
+                      - id_player: d15eacfa-a669-4268-b063-8b2150ad8d54
+                        first_name: Feisal
+                        last_name: Salum
+                        goals: 4
+                      - id_player: 7ed4ea6f-0eb6-41af-b75d-88896759e430
+                        first_name: Hassan
+                        last_name: Maulid
+                        goals: 3
+                      - id_player: 2b03a58d-aaae-46d6-b95c-8b954d56007f
+                        first_name: Nickson
+                        last_name: Kibabage
+                        goals: 3
+                      - id_player: 0b6804f6-5f6b-4740-8825-9083a7852d12
+                        first_name: Salum
+                        last_name: Kipemba
+                        goals: 3
+                      - id_player: aacde5b3-1cd3-4a82-bce8-53ac4749a567
+                        first_name: Richardson
+                        last_name: Ng`ondya
+                        goals: 3
+                      - id_player: ce219227-6129-48ba-8b7d-91bc9ae6756b
+                        first_name: Maabad
+                        last_name: Maabad
+                        goals: 3
+                      - id_player: 8806f200-962d-4b27-9b13-eb4b8a02ec7c
+                        first_name: Obrey
+                        last_name: Chirwa
+                        goals: 3
+                      - id_player: e57b45ab-0862-476d-855b-c3e87a8802d8
+                        first_name: Charles
+                        last_name: Ilanfia
+                        goals: 3
+                      - id_player: 5619210f-affb-4c40-a990-d0ba9e1ddace
+                        first_name: Meshack
+                        last_name: Abraham
+                        goals: 3
+                      - id_player: bac5938a-281b-4b84-8019-7b2b79bdccb6
+                        first_name: Rashid
+                        last_name: Mtabwigwa
+                        goals: 3
+                      - id_player: dae161e9-1ff7-4c26-8df5-c3ed20acfabe
+                        first_name: Ismail
+                        last_name: Mhesa
+                        goals: 3
+                      - id_player: cfd7a093-8446-4a45-a8ea-eba2dc82ebe8
+                        first_name: Mbaraka
+                        last_name: Yusuf
+                        goals: 3
+                      - id_player: cec3de74-0c20-4064-b89e-8b0622366f14
+                        first_name: Juma
+                        last_name: Luizio
+                        goals: 3
+                      - id_player: f41cb1e2-733f-42c0-ba80-158310ee3c36
+                        first_name: Hamad
+                        last_name: Majimengi
+                        goals: 3
+                      - id_player: 79fa44b2-641c-402e-9fc9-6dcf00debe38
+                        first_name: Clatous
+                        last_name: Chama
+                        goals: 3
+                    metadata:
+                      current_page: 2
+                      page_size: 20
+                      first_page: 1
+                      last_page: 8
+                      total_records: 149
+      parameters:
+        - schema:
+            type: number
+            example: 1
+          in: query
+          name: page
+          description: Current Page Number
+          example: 1
+        - schema:
+            type: number
+            example: 20
+          in: query
+          name: page_size
+          description: Page Size that is needed
+          example: 20
+      security:
+        - bearerAuth: []
+      description: Get current top scorers
+  /v1/topassists:
+    get:
+      tags:
+        - Stats
+      summary: Get topassists
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Topassists:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_player:
+                          type: string
+                        first_name:
+                          type: string
+                        last_name:
+                          type: string
+                        assist:
+                          type: integer
+                  metadata:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      first_page:
+                        type: integer
+                      last_page:
+                        type: integer
+                      total_records:
+                        type: integer
+                x-examples:
+                  Example 1:
+                    Topassists:
+                      - id_player: 79fa44b2-641c-402e-9fc9-6dcf00debe38
+                        first_name: Clatous
+                        last_name: Chama
+                        assist: 10
+                      - id_player: 8d55a90a-46fa-4755-93e2-c95412d528a5
+                        first_name: Saido
+                        last_name: Ntibazonkiza
+                        assist: 8
+                      - id_player: 41b8685d-c960-4255-b6ca-daed9a3592ef
+                        first_name: Sixtus
+                        last_name: Sabilo
+                        assist: 6
+                      - id_player: 46cd008c-80ea-45d0-85c1-de53ce9d764c
+                        first_name: Ayoub
+                        last_name: Lyanga
+                        assist: 5
+                      - id_player: 10b31340-b36a-4ecd-8a1b-4334d07f1a89
+                        first_name: Ally
+                        last_name: Ramadhani
+                        assist: 5
+                      - id_player: e19d1a2f-674f-4271-9a1b-c7ef7cdd877b
+                        first_name: Mohamed
+                        last_name: Hussein
+                        assist: 4
+                      - id_player: 3f1ac797-e92a-48f4-bdfb-32d09fcc97c5
+                        first_name: Mzamiru
+                        last_name: Said
+                        assist: 4
+                      - id_player: 4767b062-7c47-42bf-a8a6-eec26ce6e540
+                        first_name: Moloko
+                        last_name: Jesus
+                        assist: 4
+                      - id_player: b0959470-1503-444a-854d-e05acf80c2ac
+                        first_name: Shiza
+                        last_name: Kichuya
+                        assist: 4
+                      - id_player: 3d1b90b1-1e65-4583-a945-6b733fd5d007
+                        first_name: Never
+                        last_name: Tigere
+                        assist: 3
+                      - id_player: 297614ad-24f8-437e-a641-e7c58f333420
+                        first_name: James
+                        last_name: Akaminko
+                        assist: 3
+                      - id_player: dae161e9-1ff7-4c26-8df5-c3ed20acfabe
+                        first_name: Ismail
+                        last_name: Mhesa
+                        assist: 3
+                      - id_player: f41cb1e2-733f-42c0-ba80-158310ee3c36
+                        first_name: Hamad
+                        last_name: Majimengi
+                        assist: 3
+                      - id_player: 0df4e539-1e97-4aec-a567-6ac639c5df84
+                        first_name: Prince
+                        last_name: Dube
+                        assist: 3
+                      - id_player: 2ad6a588-daec-4469-b3a8-5309a99d5257
+                        first_name: Shomari
+                        last_name: Kapombe
+                        assist: 3
+                      - id_player: ed325ce7-0ce0-435d-a40f-0c0835bfca5c
+                        first_name: Lomalissa
+                        last_name: Mutambala
+                        assist: 3
+                      - id_player: 8660c430-0e48-4381-b55a-8168f1d45115
+                        first_name: Awadh
+                        last_name: Juma
+                        assist: 3
+                      - id_player: 9795aa49-f290-45fd-b2d6-c89c6aa09b0f
+                        first_name: Tariq
+                        last_name: Seif
+                        assist: 3
+                      - id_player: eaccc28c-9399-4b75-a6c3-654a33dc1fa2
+                        first_name: Darueshi
+                        last_name: Saliboko
+                        assist: 3
+                      - id_player: d3dc6f0c-b772-4ecf-986c-0fa79bba4e6e
+                        first_name: Deus
+                        last_name: Kaseke
+                        assist: 3
+                    metadata:
+                      current_page: 1
+                      page_size: 20
+                      first_page: 1
+                      last_page: 7
+                      total_records: 127
+      parameters:
+        - schema:
+            type: number
+            example: 1
+          in: query
+          name: page
+          description: current_page
+          example: 1
+        - schema:
+            type: number
+            example: 20
+          in: query
+          name: page_size
+          description: Number of pages needed
+          example: 20
+      security:
+        - bearerAuth: []
+      description: Get current top assists
+  /v1/metrics:
+    get:
+      tags:
+        - Metrics
+      summary: view metrics
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cmdline:
+                    type: array
+                    items:
+                      type: string
+                  database:
+                    type: object
+                    properties:
+                      MaxOpenConnections:
+                        type: integer
+                      OpenConnections:
+                        type: integer
+                      InUse:
+                        type: integer
+                      Idle:
+                        type: integer
+                      WaitCount:
+                        type: integer
+                      WaitDuration:
+                        type: integer
+                      MaxIdleClosed:
+                        type: integer
+                      MaxIdleTimeClosed:
+                        type: integer
+                      MaxLifetimeClosed:
+                        type: integer
+                  goroutines:
+                    type: integer
+                  memstats:
+                    type: object
+                    properties:
+                      Alloc:
+                        type: integer
+                      TotalAlloc:
+                        type: integer
+                      Sys:
+                        type: integer
+                      Lookups:
+                        type: integer
+                      Mallocs:
+                        type: integer
+                      Frees:
+                        type: integer
+                      HeapAlloc:
+                        type: integer
+                      HeapSys:
+                        type: integer
+                      HeapIdle:
+                        type: integer
+                      HeapInuse:
+                        type: integer
+                      HeapReleased:
+                        type: integer
+                      HeapObjects:
+                        type: integer
+                      StackInuse:
+                        type: integer
+                      StackSys:
+                        type: integer
+                      MSpanInuse:
+                        type: integer
+                      MSpanSys:
+                        type: integer
+                      MCacheInuse:
+                        type: integer
+                      MCacheSys:
+                        type: integer
+                      BuckHashSys:
+                        type: integer
+                      GCSys:
+                        type: integer
+                      OtherSys:
+                        type: integer
+                      NextGC:
+                        type: integer
+                      LastGC:
+                        type: integer
+                      PauseTotalNs:
+                        type: integer
+                      PauseNs:
+                        type: array
+                        items:
+                          type: integer
+                      PauseEnd:
+                        type: array
+                        items:
+                          type: integer
+                      NumGC:
+                        type: integer
+                      NumForcedGC:
+                        type: integer
+                      GCCPUFraction:
+                        type: integer
+                      EnableGC:
+                        type: boolean
+                      DebugGC:
+                        type: boolean
+                      BySize:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            Size:
+                              type: integer
+                            Mallocs:
+                              type: integer
+                            Frees:
+                              type: integer
+                  timestamp:
+                    type: integer
+                  total_processing_time_μs:
+                    type: integer
+                  total_requests_received:
+                    type: integer
+                  total_responses_sent:
+                    type: integer
+                  total_responses_sent_by_status:
+                    type: object
+                    properties:
+                      "200":
+                        type: integer
+                      "301":
+                        type: integer
+                      "401":
+                        type: integer
+                      "404":
+                        type: integer
+                  version:
+                    type: string
+                x-examples:
+                  Example 1:
+                    cmdline:
+                      - /home/onagul/lebena/lebena-binary
+                    database:
+                      MaxOpenConnections: 25
+                      OpenConnections: 1
+                      InUse: 0
+                      Idle: 1
+                      WaitCount: 0
+                      WaitDuration: 0
+                      MaxIdleClosed: 0
+                      MaxIdleTimeClosed: 2
+                      MaxLifetimeClosed: 0
+                    goroutines: 8
+                    memstats:
+                      Alloc: 1076368
+                      TotalAlloc: 1076368
+                      Sys: 12958736
+                      Lookups: 0
+                      Mallocs: 7104
+                      Frees: 564
+                      HeapAlloc: 1076368
+                      HeapSys: 3735552
+                      HeapIdle: 2088960
+                      HeapInuse: 1646592
+                      HeapReleased: 2056192
+                      HeapObjects: 6540
+                      StackInuse: 458752
+                      StackSys: 458752
+                      MSpanInuse: 19584
+                      MSpanSys: 32640
+                      MCacheInuse: 1200
+                      MCacheSys: 15600
+                      BuckHashSys: 4262
+                      GCSys: 8289976
+                      OtherSys: 421954
+                      NextGC: 4194304
+                      LastGC: 0
+                      PauseTotalNs: 0
+                      PauseNs:
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                      PauseEnd:
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                      NumGC: 0
+                      NumForcedGC: 0
+                      GCCPUFraction: 0
+                      EnableGC: true
+                      DebugGC: false
+                      BySize:
+                        - Size: 0
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 8
+                          Mallocs: 207
+                          Frees: 0
+                        - Size: 16
+                          Mallocs: 2178
+                          Frees: 0
+                        - Size: 24
+                          Mallocs: 729
+                          Frees: 0
+                        - Size: 32
+                          Mallocs: 283
+                          Frees: 0
+                        - Size: 48
+                          Mallocs: 1009
+                          Frees: 0
+                        - Size: 64
+                          Mallocs: 400
+                          Frees: 0
+                        - Size: 80
+                          Mallocs: 173
+                          Frees: 0
+                        - Size: 96
+                          Mallocs: 192
+                          Frees: 0
+                        - Size: 112
+                          Mallocs: 369
+                          Frees: 0
+                        - Size: 128
+                          Mallocs: 126
+                          Frees: 0
+                        - Size: 144
+                          Mallocs: 87
+                          Frees: 0
+                        - Size: 160
+                          Mallocs: 113
+                          Frees: 0
+                        - Size: 176
+                          Mallocs: 21
+                          Frees: 0
+                        - Size: 192
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 208
+                          Mallocs: 54
+                          Frees: 0
+                        - Size: 224
+                          Mallocs: 23
+                          Frees: 0
+                        - Size: 240
+                          Mallocs: 3
+                          Frees: 0
+                        - Size: 256
+                          Mallocs: 60
+                          Frees: 0
+                        - Size: 288
+                          Mallocs: 198
+                          Frees: 0
+                        - Size: 320
+                          Mallocs: 9
+                          Frees: 0
+                        - Size: 352
+                          Mallocs: 52
+                          Frees: 0
+                        - Size: 384
+                          Mallocs: 4
+                          Frees: 0
+                        - Size: 416
+                          Mallocs: 47
+                          Frees: 0
+                        - Size: 448
+                          Mallocs: 3
+                          Frees: 0
+                        - Size: 480
+                          Mallocs: 3
+                          Frees: 0
+                        - Size: 512
+                          Mallocs: 4
+                          Frees: 0
+                        - Size: 576
+                          Mallocs: 40
+                          Frees: 0
+                        - Size: 640
+                          Mallocs: 7
+                          Frees: 0
+                        - Size: 704
+                          Mallocs: 16
+                          Frees: 0
+                        - Size: 768
+                          Mallocs: 3
+                          Frees: 0
+                        - Size: 896
+                          Mallocs: 7
+                          Frees: 0
+                        - Size: 1024
+                          Mallocs: 9
+                          Frees: 0
+                        - Size: 1152
+                          Mallocs: 32
+                          Frees: 0
+                        - Size: 1280
+                          Mallocs: 5
+                          Frees: 0
+                        - Size: 1408
+                          Mallocs: 1
+                          Frees: 0
+                        - Size: 1536
+                          Mallocs: 1
+                          Frees: 0
+                        - Size: 1792
+                          Mallocs: 8
+                          Frees: 0
+                        - Size: 2048
+                          Mallocs: 3
+                          Frees: 0
+                        - Size: 2304
+                          Mallocs: 19
+                          Frees: 0
+                        - Size: 2688
+                          Mallocs: 3
+                          Frees: 0
+                        - Size: 3072
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 3200
+                          Mallocs: 1
+                          Frees: 0
+                        - Size: 3456
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 4096
+                          Mallocs: 8
+                          Frees: 0
+                        - Size: 4864
+                          Mallocs: 5
+                          Frees: 0
+                        - Size: 5376
+                          Mallocs: 3
+                          Frees: 0
+                        - Size: 6144
+                          Mallocs: 2
+                          Frees: 0
+                        - Size: 6528
+                          Mallocs: 6
+                          Frees: 0
+                        - Size: 6784
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 6912
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 8192
+                          Mallocs: 2
+                          Frees: 0
+                        - Size: 9472
+                          Mallocs: 4
+                          Frees: 0
+                        - Size: 9728
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 10240
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 10880
+                          Mallocs: 1
+                          Frees: 0
+                        - Size: 12288
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 13568
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 14336
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 16384
+                          Mallocs: 0
+                          Frees: 0
+                        - Size: 18432
+                          Mallocs: 1
+                          Frees: 0
+                    timestamp: 1676102437
+                    total_processing_time_μs: 58897
+                    total_requests_received: 15
+                    total_responses_sent: 14
+                    total_responses_sent_by_status:
+                      "200": 7
+                      "301": 4
+                      "401": 1
+                      "404": 2
+                    version: 1.0.0
+      description: View application metrics. Used by the admin
